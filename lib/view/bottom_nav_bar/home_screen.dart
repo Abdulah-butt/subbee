@@ -25,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
 
+
   UserModel _userModel=MyConstant.currentUserModel!;
   bool isExpanded=false;
 
@@ -360,4 +361,5 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     platformChannelSpecifics=NotificationDetails(android: androidPlatformChannelSpecifics);
   }
+
 }

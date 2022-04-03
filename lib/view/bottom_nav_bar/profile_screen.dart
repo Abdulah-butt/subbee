@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:code/constant/my_constant.dart';
 import 'package:code/constant/screen_size.dart';
+import 'package:code/model/subscription_model.dart';
 import 'package:code/model/user_model.dart';
 import 'package:code/util/alerts.dart';
 import 'package:code/util/app_color.dart';
@@ -281,6 +282,7 @@ final txtMonthlyLimit=TextEditingController();
       if (result) {
         MyConstant.currentUserModel!.imgUrl = imgUrl;
         MyConstant.currentUserModel!.monthyLimit =  int.parse(txtMonthlyLimit.text);
+        SubscriptionModel.getThisMonthLimit();
 
         MyAlert.showToast("Profile updated");
         setState(() {

@@ -16,7 +16,8 @@ import 'package:flutter/material.dart';
 
 class AddSubscriptionScreen extends StatefulWidget {
   String? imgAssetPath;
-   AddSubscriptionScreen({Key? key,this.imgAssetPath}) : super(key: key);
+  String? title;
+   AddSubscriptionScreen({Key? key,this.imgAssetPath,this.title}) : super(key: key);
 
   @override
   _AddSubscriptionScreenState createState() => _AddSubscriptionScreenState();
@@ -146,6 +147,7 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
   @override
   Widget build(BuildContext context) {
    print('Image path is ${widget.imgAssetPath!}');
+   txtTitle.text=widget.title!;
     return SafeArea(
         child: Scaffold(
       backgroundColor: AppColors.appBgColor,
@@ -214,7 +216,7 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
               Row(
                 children: [
                   Text("Currency",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
-                  SizedBox(width: ScreenSize.width!*0.2,),
+                  SizedBox(width: ScreenSize.width!*0.13,),
                   SizedBox(
                     width: ScreenSize.width!*0.3,
                     child: DropdownButton(
@@ -247,7 +249,7 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
               Row(
                 children: [
                   Text("Category",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
-                  SizedBox(width: ScreenSize.width!*0.2,),
+                  SizedBox(width: ScreenSize.width!*0.13,),
                   SizedBox(
                     width: ScreenSize.width!*0.3,
                     child: DropdownButton(

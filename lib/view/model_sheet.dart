@@ -81,7 +81,7 @@ class _ModelSheetState extends State<ModelSheet> {
                             child:ListTile(
                               onTap: (){
                                 Navigator.push(context,MaterialPageRoute(
-                                        builder: (context) => AddSubscriptionScreen(imgAssetPath: 'assets/companies/${tempLogos[index]}.png',)
+                                        builder: (context) => AddSubscriptionScreen(imgAssetPath: 'assets/companies/${tempLogos[index]}.png',title:tempLogos[index],)
                                     )
                                 );
                               },

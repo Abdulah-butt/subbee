@@ -86,6 +86,7 @@ flutter_native_splash:
   image: assets/images/logo.png
   android: true
   ios: true
+  fullscreen: true
 
 flutter_app_name:
   name: "Subbee"

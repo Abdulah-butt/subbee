@@ -1,5 +1,6 @@
 import 'package:code/constant/my_constant.dart';
 import 'package:code/constant/screen_size.dart';
+import 'package:code/model/subscription_model.dart';
 import 'package:code/model/user_model.dart';
 import 'package:code/util/alerts.dart';
 import 'package:code/util/app_color.dart';
@@ -194,6 +195,8 @@ void signInAction() async{
         print("login username is ${ MyConstant.currentUserModel!.name}");
       }
 
+      SubscriptionModel.getThisMonthLimit();
+
       // close indicator
 
       Navigator.pop(context);
@@ -242,6 +245,8 @@ void signInAction() async{
 
             // save into shared prefference
             AuthenticationService.saveUser(MyConstant.currentUserID!);
+
+            SubscriptionModel.getThisMonthLimit();
 
             // close indicator
 

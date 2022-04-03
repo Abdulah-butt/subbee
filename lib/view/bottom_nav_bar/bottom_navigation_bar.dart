@@ -7,6 +7,7 @@ import 'package:code/view/bottom_nav_bar/profile_screen.dart';
 import 'package:code/view/bottom_nav_bar/spending_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
@@ -36,7 +37,10 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen>
     ScreenSize.width = MediaQuery.of(context).size.width;
 
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async {
+        SystemNavigator.pop();
+        return true;
+      },
       child: SafeArea(
         child: Scaffold(
           body: Center(

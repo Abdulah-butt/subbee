@@ -95,6 +95,25 @@ class SubscriptionModel {
     return  users.doc(MyConstant.currentUserID).collection('subscriptions').orderBy('timestamp',descending: true).where('timestamp',isGreaterThanOrEqualTo: new DateTime(date.year, date.month, 1)).where('timestamp', isLessThanOrEqualTo: DateTime(date.year, date.month + 1,1)).snapshots();
   }
 
+  static Future<void> getThisMonthLimit() async{
+    var date =  DateTime.now();
+    QuerySnapshot snapshot=  await users.doc(MyConstant.currentUserID).collection('subscriptions').orderBy('timestamp',descending: true).where('timestamp',isGreaterThanOrEqualTo: new DateTime(date.year, date.month, 1)).where('timestamp', isLessThanOrEqualTo: DateTime(date.year, date.month + 1,1)).get();
+    var allDocs=snapshot.docs;
+    if(allDocs.isEmpty){
+      MyConstant.thisMonthRemainingLimit=MyConstant.currentUserModel!.monthyLimit!;
+    }else{
+      int totalSpentThisMonth = 0;
+
+      for (var doc in allDocs) {
+        SubscriptionModel subModel = SubscriptionModel.fromJson(doc);
+        totalSpentThisMonth = totalSpentThisMonth + subModel.price!;
+      }
+      int remainingThisMonth =MyConstant.currentUserModel!.monthyLimit! - totalSpentThisMonth;
+      MyConstant.thisMonthRemainingLimit=remainingThisMonth;
+    }
+
+  }
+
   static Stream<QuerySnapshot> getAllSubscriptions(){
     return  users.doc(MyConstant.currentUserID).collection('subscriptions').snapshots();
   }
