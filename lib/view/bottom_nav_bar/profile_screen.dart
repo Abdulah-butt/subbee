@@ -29,13 +29,11 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   UserModel userModel=MyConstant.currentUserModel!;
-final txtMonthlyLimit=TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     ScreenSize.width=MediaQuery.of(context).size.width;
     ScreenSize.height=MediaQuery.of(context).size.height;
-    txtMonthlyLimit.text=userModel.monthyLimit.toString();
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.appBgColor,
@@ -115,8 +113,6 @@ final txtMonthlyLimit=TextEditingController();
                   ],
                 ),
 
-              customTextField(hint: "Monthly Limit",controller:txtMonthlyLimit,icon: Icon(Icons.label_important)),
-
               SizedBox(
                 height: ScreenSize.height! * 0.03,
               ),
@@ -147,14 +143,7 @@ final txtMonthlyLimit=TextEditingController();
               Align(
                 alignment: Alignment.center,
                 child: customButton("Logout",() async {
-                  AuthenticationService.logoutUser();
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AuthenticationScreen()
-                      ),
-                          (Route<dynamic> route) => false
-                  );
+               showAlertDialog(context);
                 },width: ScreenSize.width!*0.35,icon: Icon(Icons.logout,color: Colors.white,)),
               ),
             ],
@@ -252,9 +241,6 @@ final txtMonthlyLimit=TextEditingController();
 
   saveProfileAction() async {
 
-    if(txtMonthlyLimit.text.isEmpty){
-      MyAlert.showToast("Please enter monthly limit");
-    }else {
       customloadingIndicator(context);
 
       // delete previous image from storage
@@ -275,13 +261,12 @@ final txtMonthlyLimit=TextEditingController();
 
       UserModel uModel = UserModel(
           imgUrl: imgUrl,
-          monthyLimit: int.parse(txtMonthlyLimit.text)
+
       );
       bool result = await UserModel.updateUser(uModel);
       Navigator.pop(context);
       if (result) {
         MyConstant.currentUserModel!.imgUrl = imgUrl;
-        MyConstant.currentUserModel!.monthyLimit =  int.parse(txtMonthlyLimit.text);
         SubscriptionModel.getThisMonthLimit();
 
         MyAlert.showToast("Profile updated");
@@ -289,7 +274,6 @@ final txtMonthlyLimit=TextEditingController();
 
         });
       }
-    }
   }
 
 
@@ -312,4 +296,50 @@ final txtMonthlyLimit=TextEditingController();
     throw 'Could not launch $url';
     }
   }
+
+
+
+
+  showAlertDialog(BuildContext context) {
+
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text("CANCEL"),
+      onPressed:  () {
+        Navigator.pop(context);
+      },
+    );
+    Widget continueButton = TextButton(
+      child: Text("LOGOUT"),
+      onPressed:  () {
+        AuthenticationService.logoutUser();
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AuthenticationScreen()
+            ),
+                (Route<dynamic> route) => false
+        );
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("LOGOUT ",style: headingStyle(fontWeight: FontWeight.bold,fontSize: 16,color: Colors.red),),
+      content: Text("Do you really want to logout from app?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
 }

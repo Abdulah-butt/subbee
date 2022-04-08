@@ -5,6 +5,5 @@ class MyConstant{
   static int currentScreenIndex=0;
   static String? currentUserID;
   static UserModel? currentUserModel;
-  static int? thisMonthRemainingLimit;
   static SubscriptionModel? clickedSubModel;
 }

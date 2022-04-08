@@ -102,14 +102,15 @@ Widget customTextField(
 
 Widget secondaryTextField({TextEditingController? controller,TextInputType? keyboard,String? hint}){
   return Container(
-      width: 100.0,
       child: TextField(
         controller: controller,
         keyboardType: keyboard,
         decoration: InputDecoration(
-          label: Text(hint!),
           border: InputBorder.none,
-          contentPadding: EdgeInsets.zero
+          hintText: hint,
+
+          hintStyle: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),
+          contentPadding: EdgeInsets.only(bottom: 11)
         ),
       )
   );

@@ -37,7 +37,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     ScreenSize.height=MediaQuery.of(context).size.height;
     return SafeArea(
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
         backgroundColor:AppColors.appBgColor,
         body: Padding(
           padding: EdgeInsets.only(left: ScreenSize.screenPadding,right: ScreenSize.screenPadding),
@@ -195,7 +194,6 @@ void signInAction() async{
         print("login username is ${ MyConstant.currentUserModel!.name}");
       }
 
-      SubscriptionModel.getThisMonthLimit();
 
       // close indicator
 
@@ -235,7 +233,6 @@ void signInAction() async{
           UserModel _userModel = UserModel(
               userId: MyConstant.currentUserID,
                name: name,
-              monthyLimit:0,
               email: email,
               imgUrl: "null");
           result = await _userModel.addUser();
@@ -246,7 +243,6 @@ void signInAction() async{
             // save into shared prefference
             AuthenticationService.saveUser(MyConstant.currentUserID!);
 
-            SubscriptionModel.getThisMonthLimit();
 
             // close indicator
 

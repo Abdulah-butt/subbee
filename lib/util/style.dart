@@ -55,6 +55,15 @@ TextStyle simpleItalic(){
   );
 }
 
+
+TextStyle bottomSheetStyle(){
+  return  TextStyle(
+      fontSize: 18,
+      color:Colors.blue,
+      decoration: TextDecoration.underline,
+  );
+}
+
 TextStyle appbarSubtitleStyle(){
   return  TextStyle(
       fontSize: 14,

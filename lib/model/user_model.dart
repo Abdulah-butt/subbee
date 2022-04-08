@@ -10,17 +10,15 @@ class UserModel {
   String? userId;
   String? name;
   String? email;
-  int? monthyLimit;
   String? imgUrl;
 
-  UserModel({this.userId,this.monthyLimit, this.name, this.email, this.imgUrl});
+  UserModel({this.userId,this.name, this.email, this.imgUrl});
 
   UserModel.fromJson(DocumentSnapshot json) {
     userId = json['userId'];
     name = json['name'];
     email = json['email'];
     imgUrl = json['imgUrl'];
-    monthyLimit=json['monthyLimit'];
   }
 
   Map<String, dynamic> toJson() {
@@ -29,7 +27,6 @@ class UserModel {
     data['name'] = this.name;
     data['email'] = this.email;
     data['imgUrl'] = this.imgUrl;
-    data['monthyLimit']=this.monthyLimit;
     return data;
   }
 
@@ -41,6 +38,9 @@ class UserModel {
   Future<bool> addUser()async{
     try{
       await users.doc(userId).set(toJson());
+      await users.doc(userId).collection('settings').doc('settings').set({
+        'currency':"USD"
+      });
       return true;
     }catch(e){
       MyAlert.showToast('Something went wrong! $e');
@@ -86,7 +86,6 @@ class UserModel {
     try{
       await FirebaseFirestore.instance.collection('users').doc(MyConstant.currentUserID).update({
         'imgUrl':userModel.imgUrl??"null",
-        'monthyLimit':userModel.monthyLimit
       });
       return true;
     }catch(e){

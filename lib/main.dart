@@ -7,9 +7,11 @@ import 'package:code/util/services/notification_service.dart';
 import 'package:code/view/add_subscription_screen.dart';
 import 'package:code/view/authentication_screen.dart';
 import 'package:code/view/bottom_nav_bar/bottom_navigation_bar.dart';
+import 'package:code/view/bottom_nav_bar/new_home_screen.dart';
 import 'package:code/view/change_password.dart';
 import 'package:code/view/detail_subscription_screen.dart';
 import 'package:code/view/forgetpassword_screen.dart';
+import 'package:code/view/setting_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,9 +24,9 @@ Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
-  await NotificationService().init();
-
-  await NotificationAPI.init();
+  // await NotificationService().init();
+  //
+  // await NotificationAPI.init();
 
   await Firebase.initializeApp();
 
@@ -36,13 +38,14 @@ Future<void> main() async {
     MyConstant.currentUserModel= await UserModel.getUser(userID);
     MyConstant.currentUserID=userID;
     print("Saved User id is ${ MyConstant.currentUserModel!.userId}");
-
-    SubscriptionModel.getThisMonthLimit();
+    await SubscriptionModel.renewSubscriptions();
   }
 
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.white,
-      statusBarIconBrightness: Brightness.dark
+      statusBarIconBrightness: Brightness.dark,
+    systemNavigationBarColor: Colors.white,
+    systemNavigationBarIconBrightness:Brightness.dark
   ));
 
 
@@ -57,6 +60,9 @@ Future<void> main() async {
           MyRoutes.addSubscriptionScreen:(context)=>AddSubscriptionScreen(),
           MyRoutes.detailsScreen:(context)=>DetailSubscriptionScreen(),
           MyRoutes.changePasswordScreen:(context)=>ChangePasswordScreen(),
+          MyRoutes.newHomeScreen:(context)=>NewHomeScreen(),
+          MyRoutes.settingScreen:(context)=>SettingScreen(),
+
         },
       )
   );

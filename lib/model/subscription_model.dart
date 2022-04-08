@@ -12,39 +12,36 @@ class SubscriptionModel {
   String? subscriptionId;
   String? title;
   int? price;
-  String? currency;
   String? category;
-  Timestamp? startDate;
   Timestamp? endDate;
   String? cycle;
-  int? reminder;
-  String? url;
+  String? reminder;
+  String? description;
   String? imgUrl;
+  bool? isRenewed;
 
   SubscriptionModel(
       {this.subscriptionId,
         this.title,
         this.price,
-        this.currency,
         this.category,
-        this.startDate,
         this.endDate,
         this.cycle,
         this.reminder,
-        this.url,
+        this.description,
+        this.isRenewed,
         this.imgUrl});
 
   SubscriptionModel.fromJson(DocumentSnapshot json) {
     subscriptionId = json['subscriptionId'];
     title = json['title'];
     price = json['price'];
-    currency = json['currency'];
     category = json['category'];
-    startDate = json['startDate'];
     endDate = json['endDate'];
     cycle = json['cycle'];
     reminder = json['reminder'];
-    url = json['url'];
+    description = json['description'];
+    isRenewed=json['isRenewed'];
     imgUrl = json['imgUrl'];
   }
 
@@ -53,14 +50,13 @@ class SubscriptionModel {
     data['subscriptionId'] = this.subscriptionId;
     data['title'] = this.title;
     data['price'] = this.price;
-    data['currency'] = this.currency;
     data['category'] = this.category;
-    data['startDate'] = this.startDate;
     data['endDate'] = this.endDate;
     data['cycle'] = this.cycle;
     data['reminder'] = this.reminder;
-    data['url'] = this.url;
+    data['description'] = this.description;
     data['imgUrl'] = this.imgUrl;
+    data['isRenewed']=false;
     data['timestamp']=Timestamp.now();
     return data;
   }
@@ -80,15 +76,111 @@ class SubscriptionModel {
       return false;
     }
   }
+
+  Future<bool> renewSubscription()async{
+    try{
+      users.doc(MyConstant.currentUserID).collection('subscriptions').doc(subscriptionId).update({
+        'isRenewed':true
+      });
+      return true;
+    }catch(e){
+      MyAlert.showToast('Something went wrong! $e');
+      print(e);
+      return false;
+    }
+  }
+
+
+  Future<bool> updateSubscription()async{
+    try{
+      users.doc(MyConstant.currentUserID).collection('subscriptions').doc(subscriptionId).update({
+        'price': price,
+        'category': category,
+        'endDate': endDate,
+        'cycle': cycle,
+        'reminder': reminder,
+        'description': description,
+        'timestamp':Timestamp.now(),
+      });
+      return true;
+    }catch(e){
+      MyAlert.showToast('Something went wrong! $e');
+      print(e);
+      return false;
+    }
+  }
+
+
+  Future<bool> deleteSubscription()async{
+    try{
+      users.doc(MyConstant.currentUserID).collection('subscriptions').doc(subscriptionId).delete();
+      return true;
+    }catch(e){
+      MyAlert.showToast('Something went wrong! $e');
+      print(e);
+      return false;
+    }
+  }
   
-  static Stream<QuerySnapshot> getRecentSubscriptions(){
-    return  users.doc(MyConstant.currentUserID).collection('subscriptions').orderBy('timestamp',descending: true).snapshots();
+  static Stream<QuerySnapshot> getRecentSubscriptions({String? filterValue}){
+    if(filterValue=="All") {
+      return users.doc(MyConstant.currentUserID)
+          .collection('subscriptions')
+          .orderBy('timestamp', descending: true)
+          .snapshots();
+    }else{
+      return users.doc(MyConstant.currentUserID)
+          .collection('subscriptions')
+          .orderBy('timestamp', descending: true)
+          .where('category',isEqualTo:filterValue)
+          .snapshots();
+    }
   }
   static Stream<QuerySnapshot> getUpcomingSubscriptions(){
     return  users.doc(MyConstant.currentUserID).collection('subscriptions').orderBy('endDate',descending: false).where('endDate',isGreaterThanOrEqualTo:Timestamp.fromDate(DateTime.now())).snapshots();
   }
   static Stream<QuerySnapshot> getPreviousSubscriptions(){
     return  users.doc(MyConstant.currentUserID).collection('subscriptions').orderBy('endDate',descending: false).where('endDate',isLessThan:Timestamp.fromDate(DateTime.now())).snapshots();
+  }
+
+
+
+  // renew old subscriptions
+
+  static Future<void> renewSubscriptions() async{
+    DateTime now = new DateTime.now();
+    DateTime date = new DateTime(now.year, now.month, now.day);
+    print("current date is ${date}");
+    QuerySnapshot query=await users.doc(MyConstant.currentUserID).collection('subscriptions').orderBy('endDate',descending: false).where('endDate',isLessThan:Timestamp.fromDate(date)).where('isRenewed',isEqualTo: false).get();
+    var allDocs=query.docs;
+    if(allDocs.isNotEmpty){
+      print("${allDocs.length} Subscription to renew");
+      for(var doc in allDocs){
+        SubscriptionModel subscriptionModel=SubscriptionModel.fromJson(doc);
+        DateTime newEndDate;
+        // change end date to after 7 days==week
+        if(subscriptionModel.cycle=="Weekly"){
+          newEndDate =subscriptionModel.endDate!.toDate().add(Duration(days: 7));
+        }
+        // change end date to after 30 days==month
+        else if(subscriptionModel.cycle=="Monthly"){
+          newEndDate =subscriptionModel.endDate!.toDate().add(Duration(days: 30));
+        }
+        // change end date to after 365 days== 1 year
+        else{
+          newEndDate =subscriptionModel.endDate!.toDate().add(Duration(days:365));
+        }
+
+        // change status of previous one
+        await subscriptionModel.renewSubscription();
+
+        subscriptionModel.endDate=Timestamp.fromDate(newEndDate);
+        await subscriptionModel.addSubscription();
+
+      }
+    }else{
+      print("No Subscription to renew");
+    }
   }
   static Stream<QuerySnapshot> getThisMonthSubscription(){
     var date =  DateTime.now();
@@ -99,18 +191,18 @@ class SubscriptionModel {
     var date =  DateTime.now();
     QuerySnapshot snapshot=  await users.doc(MyConstant.currentUserID).collection('subscriptions').orderBy('timestamp',descending: true).where('timestamp',isGreaterThanOrEqualTo: new DateTime(date.year, date.month, 1)).where('timestamp', isLessThanOrEqualTo: DateTime(date.year, date.month + 1,1)).get();
     var allDocs=snapshot.docs;
-    if(allDocs.isEmpty){
-      MyConstant.thisMonthRemainingLimit=MyConstant.currentUserModel!.monthyLimit!;
-    }else{
-      int totalSpentThisMonth = 0;
-
-      for (var doc in allDocs) {
-        SubscriptionModel subModel = SubscriptionModel.fromJson(doc);
-        totalSpentThisMonth = totalSpentThisMonth + subModel.price!;
-      }
-      int remainingThisMonth =MyConstant.currentUserModel!.monthyLimit! - totalSpentThisMonth;
-      MyConstant.thisMonthRemainingLimit=remainingThisMonth;
-    }
+    // if(allDocs.isEmpty){
+    //   MyConstant.thisMonthRemainingLimit=MyConstant.currentUserModel!.monthyLimit!;
+    // }else{
+    //   int totalSpentThisMonth = 0;
+    //
+    //   for (var doc in allDocs) {
+    //     SubscriptionModel subModel = SubscriptionModel.fromJson(doc);
+    //     totalSpentThisMonth = totalSpentThisMonth + subModel.price!;
+    //   }
+    //   int remainingThisMonth =MyConstant.currentUserModel!.monthyLimit! - totalSpentThisMonth;
+    //   MyConstant.thisMonthRemainingLimit=remainingThisMonth;
+    // }
 
   }
 

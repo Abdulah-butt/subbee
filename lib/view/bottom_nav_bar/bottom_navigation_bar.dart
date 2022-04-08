@@ -3,6 +3,7 @@ import 'package:code/constant/my_constant.dart';
 import 'package:code/constant/screen_size.dart';
 import 'package:code/util/app_color.dart';
 import 'package:code/view/bottom_nav_bar/home_screen.dart';
+import 'package:code/view/bottom_nav_bar/new_home_screen.dart';
 import 'package:code/view/bottom_nav_bar/profile_screen.dart';
 import 'package:code/view/bottom_nav_bar/spending_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,8 +25,7 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen>
 
 
   var pages=[
-    HomeScreen(),
-    SpendingScreen(),
+    NewHomeScreen(),
     ProfileScreen()
   ];
 
@@ -43,6 +43,7 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen>
       },
       child: SafeArea(
         child: Scaffold(
+
           body: Center(
             child: pages[MyConstant.currentScreenIndex],
           ),
@@ -54,8 +55,6 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen>
               /// Home
               customBottomNavigationItem("Home",Icon(Icons.home)),
 
-              /// Likes
-              customBottomNavigationItem("Spending",Icon(Icons.pie_chart)),
 
               /// Profile
               customBottomNavigationItem("Profile",Icon(Icons.person))

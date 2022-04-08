@@ -3,6 +3,8 @@ import 'package:code/util/alerts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../model/subscription_model.dart';
+
 class AuthenticationService{
   static final FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -46,6 +48,7 @@ class AuthenticationService{
       );
       final User user = result.user!;
       MyConstant.currentUserID=user.uid;
+      await SubscriptionModel.renewSubscriptions();
       return true;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
