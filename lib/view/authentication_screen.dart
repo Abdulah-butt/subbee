@@ -240,6 +240,8 @@ void signInAction() async{
           if (result) {
             MyConstant.currentUserModel = _userModel;
 
+            await SubscriptionModel.getCurrency();
+
             // save into shared prefference
             AuthenticationService.saveUser(MyConstant.currentUserID!);
 

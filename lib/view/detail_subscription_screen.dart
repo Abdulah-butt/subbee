@@ -14,76 +14,74 @@ import 'package:code/widgets/custom_widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
 class DetailSubscriptionScreen extends StatefulWidget {
   const DetailSubscriptionScreen({Key? key}) : super(key: key);
 
   @override
-  _DetailSubscriptionScreenState createState() => _DetailSubscriptionScreenState();
+  _DetailSubscriptionScreenState createState() =>
+      _DetailSubscriptionScreenState();
 }
 
 class _DetailSubscriptionScreenState extends State<DetailSubscriptionScreen> {
-  SubscriptionModel subscriptionModel=MyConstant.clickedSubModel!;
-
+  SubscriptionModel subscriptionModel = MyConstant.clickedSubModel!;
 
   @override
   void initState() {
     setValue();
   }
 
-  setValue(){
+  setValue() {
     setState(() {
-      txtDescription.text=subscriptionModel.description!;
-      categoryValue=subscriptionModel.category!;
-      cycleValue=subscriptionModel.cycle!;
-      reminderValue=subscriptionModel.reminder!;
-      endDate=subscriptionModel.endDate!.toDate();
-      txtPrice.text=subscriptionModel.price.toString();
+      txtDescription.text = subscriptionModel.description ?? '';
+      categoryValue = subscriptionModel.category!;
+      cycleValue = subscriptionModel.cycle!;
+      reminderValue = subscriptionModel.reminder!;
+      endDate = subscriptionModel.endDate!.toDate();
+      txtPrice.text = subscriptionModel.price.toString();
     });
-
   }
-
 
   Future<void> updateAction() async {
     getValues();
-    if(isEmpty()){
+    if (isEmpty() || !accurate) {
       MyAlert.showToast("Please fill fields");
-    }else{
+    } else {
       // show loading indicator
       customloadingIndicator(context);
 
-        SubscriptionModel subscriptionModel = SubscriptionModel(
-          subscriptionId: MyConstant.clickedSubModel!.subscriptionId,
-          price: price,
-          category: categoryValue,
-          endDate: Timestamp.fromDate(endDate!),
-          cycle: cycleValue,
-          reminder: reminderValue,
-          description: description,
-        );
-        bool result = await subscriptionModel.updateSubscription();
-        Navigator.pop(context);
+      SubscriptionModel subscriptionModel = SubscriptionModel(
+        subscriptionId: MyConstant.clickedSubModel!.subscriptionId,
+        price: price,
+        category: categoryValue,
+        endDate: Timestamp.fromDate(endDate!),
+        cycle: cycleValue,
+        reminder: reminderValue,
+        description: description,
+      );
+      bool result = await subscriptionModel.updateSubscription();
+      Navigator.pop(context);
 
-        if (result) {
-          // if(reminderValue!="Never"){
-          //
-          //   int days=getReminderDay();
-          //   var finalDate=endDate!.add(Duration(hours: 1,minutes: 1,seconds: 1));
-          //   print("schedule notification at ${finalDate.subtract(Duration(days: days))}");
-          //   scheduleNotification(finalDate.subtract(Duration(days:days)));
-          // }
-          MyAlert.showToast("Subscription updated successfully");
-          Navigator.pop(context);
-        }
+      if (result) {
+        // if(reminderValue!="Never"){
+        //
+        //   int days=getReminderDay();
+        //   var finalDate=endDate!.add(Duration(hours: 1,minutes: 1,seconds: 1));
+        //   print("schedule notification at ${finalDate.subtract(Duration(days: days))}");
+        //   scheduleNotification(finalDate.subtract(Duration(days:days)));
+        // }
+        MyAlert.showToast("Subscription updated successfully");
+        Navigator.pop(context);
       }
     }
+  }
 
-  Future<void> deleteAction() async{
-    SubscriptionModel subscriptionModel=SubscriptionModel(subscriptionId: MyConstant.clickedSubModel!.subscriptionId);
+  Future<void> deleteAction() async {
+    SubscriptionModel subscriptionModel = SubscriptionModel(
+        subscriptionId: MyConstant.clickedSubModel!.subscriptionId);
     customloadingIndicator(context);
-    bool result=await subscriptionModel.deleteSubscription();
+    bool result = await subscriptionModel.deleteSubscription();
     Navigator.pop(context);
-    if(result){
+    if (result) {
       MyAlert.showToast("Subscription deleted Successfully");
       Navigator.pop(context);
       Navigator.pop(context);
@@ -94,252 +92,317 @@ class _DetailSubscriptionScreenState extends State<DetailSubscriptionScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-          backgroundColor: AppColors.appBgColor,
-          appBar: AppBar(
-            elevation: 0,
-            backgroundColor: AppColors.appBgColor,
-            iconTheme: IconThemeData(color: Colors.black),
-            title:  Text(
-              "Subscription Details",
-              style:
-              headingStyle(fontWeight: FontWeight.bold, fontSize: 24),
-            ),
-            actions: [
-              IconButton(
-                  onPressed: () {
-                    updateAction();
-                  },
-                  icon: Icon(Icons.save,color: Colors.green,))
-            ],
-          ),
-          body: Padding(
-            padding: EdgeInsets.all(ScreenSize.screenPadding),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
+      backgroundColor: AppColors.appBgColor,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: AppColors.appBgColor,
+        iconTheme: IconThemeData(color: Colors.black),
+        title: Text(
+          "Subscription Details",
+          style: headingStyle(fontWeight: FontWeight.bold, fontSize: 24),
+        ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                updateAction();
+              },
+              icon: Icon(
+                Icons.save,
+                color: Colors.green,
+              ))
+        ],
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(ScreenSize.screenPadding),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                    color: AppColors.btnColor.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(15)),
+                child: Row(
+                  children: [
+                    // image
 
-                  Row(
-                    children: [
+                    Container(
+                      height: 100,
+                      width: 100,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                          image: DecorationImage(
+                              image: NetworkImage(subscriptionModel.imgUrl!))),
+                    ),
 
+                    SizedBox(
+                      width: ScreenSize.width! * 0.15,
+                    ),
 
-                      // image
-
-                      Container(
-                        height: 100,
-                        width: 100,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.white,
-                            image: DecorationImage(
-                                image: NetworkImage(subscriptionModel.imgUrl!)
-                            )
+                    Column(
+                      children: [
+                        Text(
+                          "${subscriptionModel.title}",
+                          style: headingStyle(
+                              fontWeight: FontWeight.bold, fontSize: 22),
                         ),
-                      ),
-
-                      SizedBox(width: ScreenSize.width!*0.15,),
-
-                      Column(
-                        children: [
-                          Text("${subscriptionModel.title}",style: headingStyle(fontWeight: FontWeight.bold,fontSize: 22),),
-                          SizedBox(height: 10,),
-                          Container(
-                            height: 50,
-                            width: ScreenSize.width!*0.4,
-                            padding: EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Colors.green)
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.all(3),
-                                  child: Text("USD",style: headingStyle(fontWeight: FontWeight.bold),),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          height: 50,
+                          width: ScreenSize.width! * 0.4,
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: Colors.green)),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(3),
+                                child: Text(
+                                  "${MyConstant.currency}",
+                                  style:
+                                      headingStyle(fontWeight: FontWeight.bold),
                                 ),
-                                SizedBox(width: 20,),
-
-                                Expanded(
-                                    child: secondaryTextField(keyboard: TextInputType.number,controller: txtPrice,hint: "0,00"))
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-
-                    ],
-                  ),
-                  SizedBox(height: 10,),
-
-
-                  SizedBox(height: ScreenSize.height!*0.03,),
-
-
-                  Align(
-                      alignment: Alignment.centerLeft,
-                      child: secondaryTextField(keyboard: TextInputType.text,controller: txtDescription,hint: "Description")),
-
-                  // category
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Category",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
-                      customDropDown(categoryValue,(){
-                        showCategoryPicker();
-                      })
-                    ],
-                  ),
-
-                  SizedBox(height: ScreenSize.height!*0.03,),
-
-                  // date
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Billing End Date",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
-                      GestureDetector(
-                        onTap: (){
-                          showModalBottomSheet(
-                              context: context,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(20),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              builder: (context){
-                                return buildDatePicker();
-                              }
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 55),
-                          child: endDate==null?Text("Not Selected",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18)):Text(formatDate(endDate!),style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Expanded(
+                                  child: secondaryTextField(
+                                      keyboard: TextInputType.number,
+                                      controller: txtPrice,
+                                      hint: "0,00"))
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
 
+              SizedBox(
+                height: ScreenSize.height! * 0.03,
+              ),
 
-                  SizedBox(height: ScreenSize.height!*0.03,),
+              Align(
+                  alignment: Alignment.centerLeft,
+                  child: secondaryTextField(
+                      keyboard: TextInputType.text,
+                      controller: txtDescription,
+                      hint: "Description")),
 
-                  // cycle
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Billing Cycle",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
-                      customDropDown(cycleValue,(){
-                        showCyclePicker();
-                      })
-                    ],
-                  ),
-
-                  SizedBox(height: ScreenSize.height!*0.03,),
-
-                  // reminder
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Remind Me",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
-                      customDropDown(reminderValue,(){
-                        showReminderPicker();
-                      })
-                    ],
-                  ),
-
-
-                  SizedBox(height: 20,),
-                  InkWell(
-                      onTap: (){
-                        showAlertDialog(context);
-                      },
-                      child: Center(child: Text("Delete Subscription",style: headingStyle(color: Colors.red,fontSize: 22),))),
-                  SizedBox(
-                    height: ScreenSize.height! * 0.1,
-                  ),
-
+              // category
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
                   Text(
-                    "Previous subscriptions",
-                    style: headingStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    "Category",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
+                  customDropDown(categoryValue, () {
+                    showCategoryPicker();
+                  })
+                ],
+              ),
 
-                  SizedBox(height: 10,),
-                  Container(
-                    constraints: BoxConstraints(
-                      minHeight: 400,
-                      maxHeight: 400,
-                      minWidth: ScreenSize.width!
-                    ),
-                    padding: EdgeInsets.all(18),
-                    decoration: BoxDecoration(
-                      color: Colors.blue.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(18)
-                    ),
-                    child: StreamBuilder<QuerySnapshot>(
-                        key: UniqueKey(),
-                        stream:SubscriptionModel.getPreviousSubscriptions(),
-                        builder: (context, snapshot) {
-                          if(!snapshot.hasData){
-                            return loadingIndicator();
-                          }
-                          if(snapshot.data!.docs.isEmpty){
-                            return Center(child: Text("No Previous Subscription Yet"),);
-                          }
+              SizedBox(
+                height: ScreenSize.height! * 0.03,
+              ),
 
-                          return ListView.builder(
-                            itemCount: snapshot.data!.size,
-                            itemBuilder: (context, index) {
+              // date
 
-                              SubscriptionModel subModel=SubscriptionModel.fromJson(snapshot.data!.docs[index]);
-
-                              return GestureDetector(
-                                  onTap: (){
-                                    MyConstant.clickedSubModel=subModel;
-                                    Navigator.pushNamed(context, MyRoutes.detailsScreen);
-
-                                  },
-                                  child: subscriptionTile(imgUrl: subModel.imgUrl,title: subModel.title,price: subModel.price,cycle: subModel.cycle));
-                            },
-                          );
-                        }
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Billing End Date",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                          context: context,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(20),
+                            ),
+                          ),
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          builder: (context) {
+                            return buildDatePicker();
+                          });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 55),
+                      child: endDate == null
+                          ? Text("Not Selected",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 18))
+                          : Text(
+                              formatDate(endDate!),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 18),
+                            ),
                     ),
                   ),
                 ],
               ),
-            ),
+
+              SizedBox(
+                height: ScreenSize.height! * 0.03,
+              ),
+
+              // cycle
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Billing Cycle",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                  customDropDown(cycleValue, () {
+                    showCyclePicker();
+                  })
+                ],
+              ),
+
+              SizedBox(
+                height: ScreenSize.height! * 0.03,
+              ),
+
+              // reminder
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Remind Me",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                  customDropDown(reminderValue, () {
+                    showReminderPicker();
+                  })
+                ],
+              ),
+
+              SizedBox(
+                height: 20,
+              ),
+              InkWell(
+                  onTap: () {
+                    showAlertDialog(context);
+                  },
+                  child: Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                        color: AppColors.btnColor.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(10)),
+                    child: Center(
+                      child: Text(
+                      "Delete Subscription",
+                      style: headingStyle(color: Colors.red, fontSize: 22),
+                  ),
+                    ),
+                  )),
+              SizedBox(
+                height: ScreenSize.height! * 0.05,
+              ),
+
+              Container(
+                constraints: BoxConstraints(
+                    minHeight: 400,
+                    maxHeight: 400,
+                    minWidth: ScreenSize.width!),
+                padding: EdgeInsets.all(18),
+                decoration: BoxDecoration(
+                    color: AppColors.btnColor.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(18)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    customLine(),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      "Previous subscriptions",
+                      style: headingStyle(
+                          fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Expanded(
+                      child: StreamBuilder<QuerySnapshot>(
+                          key: UniqueKey(),
+                          stream: SubscriptionModel.getPreviousSubscriptions(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return loadingIndicator();
+                            }
+                            if (snapshot.data!.docs.isEmpty) {
+                              return Center(
+                                child: Text("No Previous Subscription Yet"),
+                              );
+                            }
+
+                            return ListView.builder(
+                              itemCount: snapshot.data!.size,
+                              itemBuilder: (context, index) {
+                                SubscriptionModel subModel =
+                                    SubscriptionModel.fromJson(
+                                        snapshot.data!.docs[index]);
+
+                                return GestureDetector(
+                                    onTap: () {
+                                      MyConstant.clickedSubModel = subModel;
+                                      Navigator.pushNamed(
+                                          context, MyRoutes.detailsScreen);
+                                    },
+                                    child: subscriptionTile(
+                                        imgUrl: subModel.imgUrl,
+                                        title: subModel.title,
+                                        description: subModel.description,
+                                        price: subModel.price,
+                                        cycle: subModel.cycle));
+                              },
+                            );
+                          }),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ));
+        ),
+      ),
+    ));
   }
-
-
-
 
   // Initial Selected Value
   String categoryValue = 'Entertainment';
 
   // List of items in our dropdown menu
-  var categoryList = [
-    'Entertainment',
-    'Work'
-  ];
+  var categoryList = ['Entertainment', 'Work'];
 
   // Initial Selected Value
   String cycleValue = 'Weekly';
 
   // List of items in our dropdown menu
-  var cycleList = [
-    'Weekly',
-    'Monthly',
-    'Yearly'
-  ];
-
+  var cycleList = ['Weekly', 'Monthly', 'Yearly'];
 
   // Initial Selected Value
   String reminderValue = 'Never';
@@ -355,46 +418,48 @@ class _DetailSubscriptionScreenState extends State<DetailSubscriptionScreen> {
 
   DateTime? endDate;
 
-  final txtTitle=TextEditingController();
-  final txtPrice=TextEditingController();
-  final txtDescription=TextEditingController();
+  final txtTitle = TextEditingController();
+  final txtPrice = TextEditingController();
+  final txtDescription = TextEditingController();
 
-  String? title,description;
-  int? price;
+  String? title, description;
+  double? price;
+  bool accurate = false;
 
-  void getValues(){
+  void getValues() {
     try {
-      price = int.parse(txtPrice.text);
-      description=txtDescription.text;
-    }catch(e){
+      title = txtTitle.text;
+      price = double.parse(txtPrice.text);
+      description = txtDescription.text;
+      accurate = true;
+    } catch (e) {
       MyAlert.showToast("Please enter price");
     }
   }
-  bool isEmpty(){
-    if(price.toString().isEmpty||endDate==null){
+
+  bool isEmpty() {
+    if (price.toString().isEmpty || endDate == null) {
       return true;
-    }else{
+    } else {
       return false;
     }
   }
 
-  int getReminderDay(){
-    if(reminderValue=="Same day"){
+  int getReminderDay() {
+    if (reminderValue == "Same day") {
       return 0;
-    }else if(reminderValue=="1 day prior"){
+    } else if (reminderValue == "1 day prior") {
       return 1;
-    }
-    else if(reminderValue=="2 day prior"){
+    } else if (reminderValue == "2 day prior") {
       return 2;
-    }
-    else{
+    } else {
       return 3;
     }
   }
 
-  customDropDown(String currentValue,Function function){
+  customDropDown(String currentValue, Function function) {
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         function();
       },
       child: SizedBox(
@@ -402,7 +467,10 @@ class _DetailSubscriptionScreenState extends State<DetailSubscriptionScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(currentValue,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),),
+            Text(
+              currentValue,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            ),
             Icon(Icons.keyboard_arrow_down)
           ],
         ),
@@ -410,27 +478,26 @@ class _DetailSubscriptionScreenState extends State<DetailSubscriptionScreen> {
     );
   }
 
-
   DateTime currentDateTime = DateTime.now();
 
   Widget buildDatePicker() => SizedBox(
-    height: 250,
-    child: Column(
-      children: [
-        headingRow(title: "Next Billing Date"),
-        SizedBox(
-          height: 180,
-          child: CupertinoDatePicker(
-            backgroundColor: Colors.grey.withOpacity(0.2),
-            initialDateTime: currentDateTime,
-            mode: CupertinoDatePickerMode.date,
-            onDateTimeChanged: (dateTime) =>
-                setState(() => this.endDate = dateTime),
-          ),
+        height: 250,
+        child: Column(
+          children: [
+            headingRow(title: "Next Billing Date"),
+            SizedBox(
+              height: 180,
+              child: CupertinoDatePicker(
+                backgroundColor: Colors.grey.withOpacity(0.2),
+                initialDateTime: currentDateTime,
+                mode: CupertinoDatePickerMode.date,
+                onDateTimeChanged: (dateTime) =>
+                    setState(() => this.endDate = dateTime),
+              ),
+            ),
+          ],
         ),
-      ],
-    ),
-  );
+      );
 
   headingRow({title}) {
     return Container(
@@ -563,27 +630,28 @@ class _DetailSubscriptionScreenState extends State<DetailSubscriptionScreen> {
         });
   }
 
-
-
   showAlertDialog(BuildContext context) {
-
     // set up the buttons
     Widget cancelButton = TextButton(
       child: Text("Cancel"),
-      onPressed:  () {
+      onPressed: () {
         Navigator.pop(context);
       },
     );
     Widget continueButton = TextButton(
       child: Text("Delete"),
-      onPressed:  () {
+      onPressed: () {
         deleteAction();
       },
     );
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("Delete Subscription",style: headingStyle(fontWeight: FontWeight.bold,fontSize: 16,color: Colors.red),),
+      title: Text(
+        "Delete Subscription",
+        style: headingStyle(
+            fontWeight: FontWeight.bold, fontSize: 16, color: Colors.red),
+      ),
       content: Text("Do you really want to delete this subscription?"),
       actions: [
         cancelButton,
@@ -599,5 +667,4 @@ class _DetailSubscriptionScreenState extends State<DetailSubscriptionScreen> {
       },
     );
   }
-
 }

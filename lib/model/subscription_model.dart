@@ -11,7 +11,7 @@ import 'package:path/path.dart';
 class SubscriptionModel {
   String? subscriptionId;
   String? title;
-  int? price;
+  double? price;
   String? category;
   Timestamp? endDate;
   String? cycle;
@@ -144,6 +144,22 @@ class SubscriptionModel {
   }
 
 
+  static Future<void> getCurrency() async{
+    DocumentSnapshot snapshot=await users.doc(MyConstant.currentUserID).collection('settings').doc('settings').get();
+    if(snapshot.exists) {
+      MyConstant.currency=snapshot['currency'];
+    }else{
+    MyConstant.currency='USD';
+    }
+  }
+
+
+  static Future<void> changeCurrency(String currency) async{
+    await users.doc(MyConstant.currentUserID).collection('settings').doc('settings').set({
+      'currency':currency
+    });
+   MyConstant.currency=currency;
+  }
 
   // renew old subscriptions
 
@@ -226,36 +242,36 @@ class SubscriptionModel {
     'December'
   ];
 
-
-  static Future<List<GraphModel>> getLastSixMonthRecord() async {
-    List<GraphModel> graphModelList=[];
-    var date =  DateTime.now();
-
-    for(int i=1;i<=6;i++) {
-      date = date.subtract(Duration(days: 31));
-      QuerySnapshot snapshot1 = await users.doc(MyConstant.currentUserID)
-          .collection('subscriptions').where('startDate',
-          isGreaterThanOrEqualTo: DateTime(date.year, date.month, 1)).where(
-          'startDate',
-          isLessThanOrEqualTo: DateTime(date.year, date.month + 1, 1))
-          .get();
-      var allDocs = snapshot1.docs;
-      int monthlySpending = 0;
-      for (var doc in allDocs) {
-        SubscriptionModel subscriptionModel = SubscriptionModel.fromJson(doc);
-        monthlySpending = monthlySpending + subscriptionModel.price!;
-      }
-
-      print("Last month date $date, month name is ${months[date.month - 1]}");
-      print('amount sent is $monthlySpending');
-
-      graphModelList.add(GraphModel(spendAmount: monthlySpending.toDouble(),
-          monthName: months[date.month-1]));
-    }
-
-    return graphModelList;
-
-  }
+  //
+  // static Future<List<GraphModel>> getLastSixMonthRecord() async {
+  //   List<GraphModel> graphModelList=[];
+  //   var date =  DateTime.now();
+  //
+  //   for(int i=1;i<=6;i++) {
+  //     date = date.subtract(Duration(days: 31));
+  //     QuerySnapshot snapshot1 = await users.doc(MyConstant.currentUserID)
+  //         .collection('subscriptions').where('startDate',
+  //         isGreaterThanOrEqualTo: DateTime(date.year, date.month, 1)).where(
+  //         'startDate',
+  //         isLessThanOrEqualTo: DateTime(date.year, date.month + 1, 1))
+  //         .get();
+  //     var allDocs = snapshot1.docs;
+  //     int monthlySpending = 0;
+  //     for (var doc in allDocs) {
+  //       SubscriptionModel subscriptionModel = SubscriptionModel.fromJson(doc);
+  //       monthlySpending = monthlySpending + subscriptionModel.price!;
+  //     }
+  //
+  //     print("Last month date $date, month name is ${months[date.month - 1]}");
+  //     print('amount sent is $monthlySpending');
+  //
+  //     graphModelList.add(GraphModel(spendAmount: monthlySpending.toDouble(),
+  //         monthName: months[date.month-1]));
+  //   }
+  //
+  //   return graphModelList;
+  //
+  // }
 
   static FirebaseStorage storage=FirebaseStorage.instance;
 

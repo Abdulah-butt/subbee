@@ -57,13 +57,15 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
   final txtDescription = TextEditingController();
 
   String? title, description;
-  int? price;
+  double? price;
 
+  bool accurate=false;
   void getValues() {
     try {
       title = txtTitle.text;
-      price = int.parse(txtPrice.text);
+      price = double.parse(txtPrice.text);
       description = txtDescription.text;
+      accurate=true;
     } catch (e) {
       MyAlert.showToast("Please enter price");
     }
@@ -81,7 +83,7 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
 
   Future<void> saveAction() async {
     getValues();
-    if (isEmpty()) {
+    if (isEmpty()||!accurate) {
       MyAlert.showToast("Please fill fields");
     } else {
       // show loading indicator
@@ -205,7 +207,7 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
                     Container(
                       padding: EdgeInsets.all(3),
                       child: Text(
-                        "USD",
+                        "${MyConstant.currency}",
                         style: headingStyle(fontWeight: FontWeight.bold),
                       ),
                       decoration: BoxDecoration(

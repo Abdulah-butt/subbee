@@ -1,4 +1,6 @@
+import 'package:code/constant/my_constant.dart';
 import 'package:code/constant/screen_size.dart';
+import 'package:code/model/subscription_model.dart';
 import 'package:code/util/app_color.dart';
 import 'package:code/util/style.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +16,19 @@ class _SettingScreenState extends State<SettingScreen> {
   bool isSwitched=false;
   String currentCurrency="USD";
   List<String> currencyList=["USD","NOK","UK","CDN"];
+
+  bool loadingCurrency=true;
+
+  @override
+  void initState() {
+    SubscriptionModel.getCurrency().whenComplete((){
+      setState(() {
+        loadingCurrency=false;
+        currentCurrency=MyConstant.currency!;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(child: Scaffold(
@@ -70,7 +85,8 @@ class _SettingScreenState extends State<SettingScreen> {
                 Text("Currency",style: headingStyle(fontSize: 14,fontWeight: FontWeight.bold),),
                 SizedBox(
                   width: ScreenSize.width!*0.3,
-                  child: DropdownButton(
+                  height: 50,
+                  child:loadingCurrency?Text(''):DropdownButton(
                     value: currentCurrency,
                     isExpanded: true,
                     icon: const Icon(Icons.keyboard_arrow_down),
@@ -85,8 +101,10 @@ class _SettingScreenState extends State<SettingScreen> {
                     // After selecting the desired option,it will
                     // change button value to selected value
                     onChanged: (String? newValue) {
+                      SubscriptionModel.changeCurrency(newValue!);
                       setState(() {
-                        currentCurrency = newValue!;
+                        currentCurrency = newValue;
+
                       });
                     },
                   ),

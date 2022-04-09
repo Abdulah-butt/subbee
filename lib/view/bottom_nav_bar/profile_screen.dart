@@ -162,12 +162,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         },
         child: PhysicalModel(
           color: Colors.white,
-          elevation: 10,
+          elevation: 3,
           // shadowColor: Colors.,
           borderRadius: BorderRadius.circular(15),
           child: Container(
             width: ScreenSize.width,
-            height: 70,
+            height: 50,
             padding: EdgeInsets.all(10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

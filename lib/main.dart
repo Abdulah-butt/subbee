@@ -39,6 +39,7 @@ Future<void> main() async {
     MyConstant.currentUserID=userID;
     print("Saved User id is ${ MyConstant.currentUserModel!.userId}");
     await SubscriptionModel.renewSubscriptions();
+    await SubscriptionModel.getCurrency();
   }
 
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(

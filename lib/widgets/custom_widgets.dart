@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:code/constant/my_constant.dart';
 import 'package:code/constant/screen_size.dart';
 import 'package:code/util/assets_path.dart';
 import 'package:code/util/style.dart';
@@ -102,15 +103,19 @@ Widget customTextField(
 
 Widget secondaryTextField({TextEditingController? controller,TextInputType? keyboard,String? hint}){
   return Container(
-      child: TextField(
-        controller: controller,
-        keyboardType: keyboard,
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          hintText: hint,
-
-          hintStyle: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),
-          contentPadding: EdgeInsets.only(bottom: 11)
+      child: Center(
+        child: TextField(
+          controller: controller,
+          keyboardType: keyboard,
+          style:  TextStyle(fontWeight: FontWeight.w600,fontSize: 18),
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            hintText: hint,
+            hintStyle: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),
+              contentPadding: EdgeInsets.only(
+                bottom:12,  // HERE THE IMPORTANT PART
+              )
+          ),
         ),
       )
   );
@@ -314,55 +319,108 @@ Widget customDialogBox(BuildContext context, String title, String subtitle) {
 
 
 
-Widget subscriptionTile({String? imgUrl,String? title,int? price,String? cycle}) {
+Widget subscriptionTile({String? imgUrl,String? title,double? price,String? cycle,String? description}) {
   return Padding(
     padding: const EdgeInsets.only(bottom: 10),
-    child: Container(
-      width: ScreenSize.width,
+    child:  Container(
       height: 70,
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
-          border: Border.all(color: Colors.black)),
-      child: Row(
-        children: [
-          customProfileAvatar(imgUrl!,
-              size: 50),
-          Padding(
-            padding: const EdgeInsets.only(left: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      child: PhysicalModel(
+        color: Colors.white,
+        elevation: 3,
+        // shadowColor: Colors.,
+        borderRadius: BorderRadius.circular(10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+
+            // img + title + desc
+            Row(
               children: [
-                Text(
-                  title!,
-                  style: headingStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                      height: 50,
+                      width: 50,
+                      child: cacheImage(imgUrl!)),
                 ),
-                RichText(
-                  text: TextSpan(
-                    text: "\$${price}",
-                    style: headingStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: AppColors.btnColor,
-                    ),
-                    children: <TextSpan>[
-                      TextSpan(
-                          text: '/${cycle}',
+                Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(
+                        title!,
+                        style: headingStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 200,
+                        height:20,
+                        child: Text(
+                          description!,
                           style: headingStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16)),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
+
+
               ],
             ),
-          )
-        ],
+
+
+            // price + cycle
+
+
+            // price and cycle
+
+            Padding(
+              padding: const EdgeInsets.only(right: 15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    "${MyConstant.currency} $price",
+                    style: headingStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color:AppColors.btnColor,
+                    ),
+                  ),
+                  Text(
+                    "${cycle}",
+                    style: headingStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     ),
+  );
+
+}
+
+customLine(){
+  return Center(
+    child: SizedBox(
+        width: 50,
+        child: Divider(
+          thickness: 3,
+        )),
   );
 }

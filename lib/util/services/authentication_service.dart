@@ -48,7 +48,10 @@ class AuthenticationService{
       );
       final User user = result.user!;
       MyConstant.currentUserID=user.uid;
+
       await SubscriptionModel.renewSubscriptions();
+      await SubscriptionModel.getCurrency();
+
       return true;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {

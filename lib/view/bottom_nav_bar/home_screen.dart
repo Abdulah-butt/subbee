@@ -147,10 +147,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       }
 
                       var allDocs=snapshot.data!.docs;
-                       int totalAmount=0;
-                       int totalEntertainment=0;
-                       int totalWork=0;
-                       int totalService=0;
+                       double totalAmount=0;
+                      double totalEntertainment=0;
+                      double totalWork=0;
+                      double totalService=0;
 
                        for(var doc in allDocs){
                          SubscriptionModel subModel=SubscriptionModel.fromJson(doc);

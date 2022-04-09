@@ -31,73 +31,70 @@ class _ModelSheetState extends State<ModelSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 450.0,
-      color: Colors.transparent, //could change this to Color(0xFF737373),
-      //so you don't have to change MaterialApp canvasColor
-      child: Container(
-          decoration:  const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(10.0),
-                  topRight: Radius.circular(10.0))),
-          child:  Padding(
-            padding: const EdgeInsets.all(18.0),
-            child: Column(
-              children: [
-                SizedBox(
-                    width: ScreenSize.width!*0.4,
-                    child: Divider(thickness: 3,)),
-                Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text("New Subscription",style: headingStyle(fontWeight: FontWeight.bold),)),
-                customTextField(hint: "Search",controller:txtSearch,iconPath: AssetPath.searchIcon,onValueChange:(){
-                  setState(() {
-
-                  });
-                }),
-                SizedBox(
-                  height: 300,
-                  child: FutureBuilder<List<String>>(
-                    future: MyFunctions.getAllFileNames(),
-                    builder: (context,logos) {
-                      if(!logos.hasData){
-                        return Center(child: const CircularProgressIndicator(),);
-                      }
-                      var allDocs=logos.data;
-                      tempLogos.clear();
-                      for(var doc in allDocs!){
-                        if(txtSearch.text.isEmpty) {
-                          tempLogos.add(doc);
-                        }else{
-                          if(doc.toLowerCase().startsWith(txtSearch.text.toLowerCase())){
-                            tempLogos.add(doc);
-                          }
-                        }
-                      }
-                      return ListView.builder(
-                        itemCount:tempLogos.length,
-                        itemBuilder: (context,index){
-                          return Card(
-                            child:ListTile(
-                              onTap: (){
-                                Navigator.push(context,MaterialPageRoute(
-                                        builder: (context) => AddSubscriptionScreen(imgAssetPath: 'assets/companies/${tempLogos[index]}.png',title:tempLogos[index],)
-                                    )
-                                );
-                              },
-                              leading: Image.asset('assets/companies/${tempLogos[index]}.png',height: 30,width: 30,),
-                              title: Text(tempLogos[index]),
-                              trailing: Icon(Icons.add),
-                            )
-                          );
-                        },
-                      );
-                    }
-                  ),
-                )
-              ],
+      height: ScreenSize.height!*0.8,
+      decoration:  const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(10.0),
+              topRight: Radius.circular(10.0))),
+      child: Padding(
+        padding: const EdgeInsets.all(18.0),
+        child: Column(
+          children: [
+            Center(
+              child: SizedBox(
+                  width: ScreenSize.width!*0.1,
+                  child: Divider(thickness: 3,)),
             ),
-          )
+            Align(
+                alignment: Alignment.centerLeft,
+                child: Text("New Subscription",style: headingStyle(fontWeight: FontWeight.bold),)),
+            customTextField(hint: "Search",controller:txtSearch,iconPath: AssetPath.searchIcon,onValueChange:(){
+              setState(() {
+
+              });
+            }),
+            Expanded(
+              child: FutureBuilder<List<String>>(
+                future: MyFunctions.getAllFileNames(),
+                builder: (context,logos) {
+                  if(!logos.hasData){
+                    return Center(child: const CircularProgressIndicator(),);
+                  }
+                  var allDocs=logos.data;
+                  tempLogos.clear();
+                  for(var doc in allDocs!){
+                    if(txtSearch.text.isEmpty) {
+                      tempLogos.add(doc);
+                    }else{
+                      if(doc.toLowerCase().startsWith(txtSearch.text.toLowerCase())){
+                        tempLogos.add(doc);
+                      }
+                    }
+                  }
+                  return ListView.builder(
+                    itemCount:tempLogos.length,
+                    itemBuilder: (context,index){
+                      return Card(
+                        child:ListTile(
+                          onTap: (){
+                            Navigator.push(context,MaterialPageRoute(
+                                    builder: (context) => AddSubscriptionScreen(imgAssetPath: 'assets/companies/${tempLogos[index]}.png',title:tempLogos[index],)
+                                )
+                            );
+                          },
+                          leading: Image.asset('assets/companies/${tempLogos[index]}.png',height: 30,width: 30,),
+                          title: Text(tempLogos[index]),
+                          trailing: Icon(Icons.add),
+                        )
+                      );
+                    },
+                  );
+                }
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
