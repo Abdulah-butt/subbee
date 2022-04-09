@@ -123,7 +123,7 @@ class SubscriptionModel {
   }
   
   static Stream<QuerySnapshot> getRecentSubscriptions({String? filterValue}){
-    if(filterValue=="All") {
+    if(filterValue=="All Subscriptions") {
       return users.doc(MyConstant.currentUserID)
           .collection('subscriptions')
           .orderBy('timestamp', descending: true)
@@ -203,27 +203,30 @@ class SubscriptionModel {
     return  users.doc(MyConstant.currentUserID).collection('subscriptions').orderBy('timestamp',descending: true).where('timestamp',isGreaterThanOrEqualTo: new DateTime(date.year, date.month, 1)).where('timestamp', isLessThanOrEqualTo: DateTime(date.year, date.month + 1,1)).snapshots();
   }
 
-  static Future<void> getThisMonthLimit() async{
-    var date =  DateTime.now();
-    QuerySnapshot snapshot=  await users.doc(MyConstant.currentUserID).collection('subscriptions').orderBy('timestamp',descending: true).where('timestamp',isGreaterThanOrEqualTo: new DateTime(date.year, date.month, 1)).where('timestamp', isLessThanOrEqualTo: DateTime(date.year, date.month + 1,1)).get();
-    var allDocs=snapshot.docs;
-    // if(allDocs.isEmpty){
-    //   MyConstant.thisMonthRemainingLimit=MyConstant.currentUserModel!.monthyLimit!;
-    // }else{
-    //   int totalSpentThisMonth = 0;
-    //
-    //   for (var doc in allDocs) {
-    //     SubscriptionModel subModel = SubscriptionModel.fromJson(doc);
-    //     totalSpentThisMonth = totalSpentThisMonth + subModel.price!;
-    //   }
-    //   int remainingThisMonth =MyConstant.currentUserModel!.monthyLimit! - totalSpentThisMonth;
-    //   MyConstant.thisMonthRemainingLimit=remainingThisMonth;
-    // }
 
-  }
 
   static Stream<QuerySnapshot> getAllSubscriptions(){
     return  users.doc(MyConstant.currentUserID).collection('subscriptions').snapshots();
+  }
+
+  static Future<void> getYearlyAvrgs() async{
+    QuerySnapshot allRecord=await users.doc(MyConstant.currentUserID).collection('subscriptions').get();
+    var allDocs=allRecord.docs;
+    double entertainmentAvg=0;
+    double workAvg=0;
+    for(var doc in allDocs){
+      SubscriptionModel subscriptionModel=SubscriptionModel.fromJson(doc);
+      if(subscriptionModel.cycle=="Yearly"){
+        if(subscriptionModel.category=="Entertainment"){
+          entertainmentAvg=entertainmentAvg+subscriptionModel.price!;
+        }
+        if(subscriptionModel.category=="Work"){
+          workAvg=workAvg+subscriptionModel.price!;
+        }
+      }
+    }
+    MyConstant.workAvg=workAvg;
+    MyConstant.entertainmentAvg=entertainmentAvg;
   }
 
 

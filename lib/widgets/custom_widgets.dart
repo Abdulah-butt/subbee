@@ -103,17 +103,18 @@ Widget customTextField(
 
 Widget secondaryTextField({TextEditingController? controller,TextInputType? keyboard,String? hint}){
   return Container(
+    height: 20,
       child: Center(
         child: TextField(
           controller: controller,
           keyboardType: keyboard,
-          style:  TextStyle(fontWeight: FontWeight.w600,fontSize: 18),
+          style:  TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           decoration: InputDecoration(
             border: InputBorder.none,
             hintText: hint,
-            hintStyle: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),
+            hintStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               contentPadding: EdgeInsets.only(
-                bottom:12,  // HERE THE IMPORTANT PART
+                bottom:10,  // HERE THE IMPORTANT PART
               )
           ),
         ),
@@ -121,6 +122,65 @@ Widget secondaryTextField({TextEditingController? controller,TextInputType? keyb
   );
 }
 
+
+
+
+Widget descriptionTextField({TextEditingController? controller,TextInputType? keyboard,String? hint}){
+  return Container(
+      height: 25,
+      child: Center(
+        child: TextField(
+          controller: controller,
+          keyboardType: keyboard,
+          style:  TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: hint,
+              hintStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              contentPadding: EdgeInsets.only(
+                bottom:13,  // HERE THE IMPORTANT PART
+              )
+          ),
+        ),
+      )
+  );
+}
+
+Widget priceWidget(TextEditingController txtPrice){
+  return Container(
+    height: 55,
+    width: ScreenSize.width! * 0.4,
+    padding: EdgeInsets.all(10),
+    decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.green,width: 2)),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          padding: EdgeInsets.all(3),
+          child: Text(
+            "${MyConstant.currency}",
+            style:
+            headingStyle(fontWeight: FontWeight.bold),
+          ),
+          decoration: BoxDecoration(
+            color: Colors.grey.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        SizedBox(
+          width: 20,
+        ),
+        Expanded(
+            child: secondaryTextField(
+                keyboard: TextInputType.number,
+                controller: txtPrice,
+                hint: "0,00"))
+      ],
+    ),
+  );
+}
 
 
 Widget customProfileAvatar(String _url,{double size=70}) {
@@ -229,7 +289,7 @@ Future<dynamic> customloadingIndicator(BuildContext context) {
 
                 child: LoadingIndicator(
                     indicatorType: Indicator.ballSpinFadeLoader, /// Required, The loading type of the widget
-                    colors: [Color(0xfffed420)],       /// Optional, The color collections
+                    colors: [Color(0xff36c688)],       /// Optional, The color collections
                     strokeWidth: 2,                     /// Optional, The stroke of the line, only applicable to widget which contains line
                     backgroundColor: Colors.transparent,      /// Optional, Background of the widget
                     pathBackgroundColor: Colors.transparent   /// Optional, the stroke backgroundColor
@@ -247,7 +307,7 @@ Widget loadingIndicator(){
     width: 50,
     child: LoadingIndicator(
         indicatorType: Indicator.ballSpinFadeLoader, /// Required, The loading type of the widget
-        colors: [Color(0xfffed420)],       /// Optional, The color collections
+        colors: [Color(0xff36c688)],       /// Optional, The color collections
         strokeWidth: 2,                     /// Optional, The stroke of the line, only applicable to widget which contains line
         backgroundColor: Colors.transparent,      /// Optional, Background of the widget
         pathBackgroundColor: Colors.transparent   /// Optional, the stroke backgroundColor
@@ -358,8 +418,8 @@ Widget subscriptionTile({String? imgUrl,String? title,double? price,String? cycl
                         ),
                       ),
                       SizedBox(
-                        width: 200,
-                        height:20,
+                        width: ScreenSize.width!*0.4,
+                        height:15,
                         child: Text(
                           description!,
                           style: headingStyle(
@@ -422,5 +482,14 @@ customLine(){
         child: Divider(
           thickness: 3,
         )),
+  );
+}
+
+customHorizontalLine(){
+  return  SizedBox(
+      width: ScreenSize.width,
+      child: Divider(
+        thickness: 2,
+      )
   );
 }

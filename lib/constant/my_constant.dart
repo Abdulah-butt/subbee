@@ -8,4 +8,8 @@ class MyConstant{
 
   static UserModel? currentUserModel;
   static SubscriptionModel? clickedSubModel;
+
+  static double? entertainmentAvg;
+  static double? workAvg;
+
 }

@@ -142,7 +142,7 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
     txtTitle.text = widget.title!;
     return SafeArea(
         child: Scaffold(
-      backgroundColor: AppColors.appBgColor,
+      backgroundColor: AppColors.appGreyBgColor,
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: ScreenSize.screenPadding),
         child: SingleChildScrollView(
@@ -194,57 +194,31 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
               SizedBox(
                 height: 10,
               ),
-              Container(
-                height: 50,
-                width: ScreenSize.width! * 0.4,
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.green)),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(3),
-                      child: Text(
-                        "${MyConstant.currency}",
-                        style: headingStyle(fontWeight: FontWeight.bold),
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.withOpacity(0.5),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Expanded(
-                        child: secondaryTextField(
-                            keyboard: TextInputType.number,
-                            controller: txtPrice,
-                            hint: "0,00"))
-                  ],
-                ),
-              ),
 
+              priceWidget(txtPrice),
               SizedBox(
                 height: ScreenSize.height! * 0.03,
               ),
 
               Align(
                   alignment: Alignment.centerLeft,
-                  child: secondaryTextField(
+                  child: descriptionTextField(
                       keyboard: TextInputType.text,
                       controller: txtDescription,
                       hint: "Description")),
+
+              customHorizontalLine(),
 
               // category
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    "Category",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: Text(
+                      "Category",
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
                   ),
                   customDropDown(categoryValue, () {
                     showCategoryPicker();
@@ -252,9 +226,7 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
                 ],
               ),
 
-              SizedBox(
-                height: ScreenSize.height! * 0.03,
-              ),
+              customHorizontalLine(),
 
               // date
 
@@ -265,42 +237,54 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
                     "Billing End Date",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
-                  SizedBox(
-                    width: 150,
-                    child: GestureDetector(
-                      onTap: () {
-                        showModalBottomSheet(
-                            context: context,
-                            clipBehavior: Clip.antiAliasWithSaveLayer,
-                            builder: (context) {
-                              return buildDatePicker();
-                            });
-                      },
-                      child: endDate == null
-                          ? Text("Not Selected",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 18))
-                          : Text(
-                              formatDate(endDate!),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 18),
+                  GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                          context: context,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(20),
                             ),
+                          ),
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          builder: (context) {
+                            return buildDatePicker();
+                          });
+                    },
+                    child: SizedBox(
+                      width: ScreenSize.width!*0.35,
+                      child: endDate == null
+                          ? Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        child: Text("Not Selected",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 18)),
+                      )
+                          : Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        child: Text(
+                          formatDate(endDate!),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18),
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
 
-              SizedBox(
-                height: ScreenSize.height! * 0.03,
-              ),
+              customHorizontalLine(),
 
               // cycle
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    "Billing Cycle",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: Text(
+                      "Billing Cycle",
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
                   ),
                   customDropDown(cycleValue, () {
                     showCyclePicker();
@@ -308,24 +292,27 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
                 ],
               ),
 
-              SizedBox(
-                height: ScreenSize.height! * 0.03,
-              ),
+              customHorizontalLine(),
 
               // reminder
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    "Remind Me",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: Text(
+                      "Remind Me",
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
                   ),
                   customDropDown(reminderValue, () {
                     showReminderPicker();
                   })
                 ],
               ),
+
+              customHorizontalLine(),
             ],
           ),
         ),
@@ -334,12 +321,12 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
   }
 
   customDropDown(String currentValue, Function function) {
-    return GestureDetector(
+    return InkWell(
       onTap: () {
         function();
       },
       child: SizedBox(
-        width: 150,
+        width: ScreenSize.width!*0.35,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

@@ -3,6 +3,7 @@ import 'package:code/constant/screen_size.dart';
 import 'package:code/model/subscription_model.dart';
 import 'package:code/util/app_color.dart';
 import 'package:code/util/style.dart';
+import 'package:code/widgets/custom_widgets.dart';
 import 'package:flutter/material.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -41,51 +42,68 @@ class _SettingScreenState extends State<SettingScreen> {
         }, icon: Icon(Icons.keyboard_arrow_down_outlined)),
         iconTheme: IconThemeData(color: Colors.black),
         titleTextStyle:TextStyle(color: Colors.black),
-        centerTitle: true,
         title: Text("Settings",style: headingStyle(fontSize: 22,fontWeight: FontWeight.bold)),
       ),
-      body: Padding(
-        padding:  EdgeInsets.all(ScreenSize.screenPadding),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("General",style: greyTextStyle(),),
-            SizedBox(height: 20,),
-            Row(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: 20,),
+          Padding(
+            padding:  EdgeInsets.symmetric(horizontal: ScreenSize.screenPadding),
+            child: Text("General",style: greyTextStyle(),),
+          ),
+          customHorizontalLine(),
+          Padding(
+            padding:  EdgeInsets.symmetric(horizontal: ScreenSize.screenPadding,vertical: 5),
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
               Text("Security",style: headingStyle(fontSize: 14,fontWeight: FontWeight.bold),),
                 Icon(Icons.navigate_next)
               ],
             ),
-                Row(
+          ),
+          customHorizontalLine(),
+              Padding(
+                padding:  EdgeInsets.symmetric(horizontal: ScreenSize.screenPadding,vertical: 6),
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("Drive Sync",style: headingStyle(fontSize: 14,fontWeight: FontWeight.bold)),
-                  Switch(
-                    value: isSwitched,
-                    onChanged: (value) {
-                      setState(() {
-                        isSwitched = value;
-                        print(isSwitched);
-                      });
-                    },
-                    activeTrackColor: Colors.lightGreenAccent,
-                    activeColor: Colors.green,
+                  SizedBox(
+                    height: 0,
+                    child: Switch(
+                      value: isSwitched,
+                      onChanged: (value) {
+                        setState(() {
+                          isSwitched = value;
+                          print(isSwitched);
+                        });
+                      },
+                      activeTrackColor: Colors.lightGreenAccent,
+                      activeColor: Colors.green,
+                    ),
                   ),
                 ],
+            ),
               ),
+          customHorizontalLine(),
 
-            SizedBox(height: 20,),
-
-            Text("My Subscriptions",style: greyTextStyle(),),
-            Row(
+          SizedBox(height: 30,),
+          Padding(
+            padding:  EdgeInsets.symmetric(horizontal: ScreenSize.screenPadding),
+            child: Text("My Subscriptions",style: greyTextStyle(),),
+          ),
+          customHorizontalLine(),
+          Padding(
+            padding:  EdgeInsets.symmetric(horizontal: ScreenSize.screenPadding),
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Currency",style: headingStyle(fontSize: 14,fontWeight: FontWeight.bold),),
+                Text("Default Currency",style: headingStyle(fontSize: 14,fontWeight: FontWeight.bold),),
                 SizedBox(
                   width: ScreenSize.width!*0.3,
-                  height: 50,
+                  height: 30,
                   child:loadingCurrency?Text(''):DropdownButton(
                     value: currentCurrency,
                     isExpanded: true,
@@ -98,8 +116,6 @@ class _SettingScreenState extends State<SettingScreen> {
                         child: Text(items,style: headingStyle(fontSize: 14,fontWeight: FontWeight.bold),),
                       );
                     }).toList(),
-                    // After selecting the desired option,it will
-                    // change button value to selected value
                     onChanged: (String? newValue) {
                       SubscriptionModel.changeCurrency(newValue!);
                       setState(() {
@@ -111,19 +127,30 @@ class _SettingScreenState extends State<SettingScreen> {
                 ),
               ],
             ),
-
-            SizedBox(height: 20,),
-            Text("Info",style: greyTextStyle(),),
-
-            SizedBox(height: 20,),
-
-            Text("About",style: headingStyle(fontSize: 14,fontWeight: FontWeight.bold),),
-            SizedBox(height: 10,),
-            Text("Submit More Subscriptions",style: headingStyle(fontSize: 14,fontWeight: FontWeight.bold),)
+          ),
+          customHorizontalLine(),
 
 
-          ],
-        ),
+          SizedBox(height: 30,),
+          Padding(
+            padding:  EdgeInsets.symmetric(horizontal: ScreenSize.screenPadding),
+            child: Text("Info",style: greyTextStyle(),),
+          ),
+          customHorizontalLine(),
+
+          Padding(
+            padding:  EdgeInsets.symmetric(horizontal: ScreenSize.screenPadding,vertical: 7),
+            child: Text("About",style: headingStyle(fontSize: 14,fontWeight: FontWeight.bold),),
+          ),
+          customHorizontalLine(),
+          Padding(
+            padding:  EdgeInsets.symmetric(horizontal: ScreenSize.screenPadding,vertical: 7),
+            child: Text("Submit More Subscriptions",style: headingStyle(fontSize: 14,fontWeight: FontWeight.bold),),
+          ),
+          customHorizontalLine(),
+
+
+        ],
       ),
     ));
   }

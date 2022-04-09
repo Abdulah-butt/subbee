@@ -6,7 +6,7 @@ class MyRoutes{
   static String addSubscriptionScreen="addSubscriptionScreen";
   static String bottomSheet="bottomSheet";
   static String detailsScreen="detailsScreen";
-  static String newHomeScreen="newHomeScreen";
+  static String homeScreen="homeScreen";
   static String settingScreen="settingScreen";
   static String filterScreen="filterScreen";
 }

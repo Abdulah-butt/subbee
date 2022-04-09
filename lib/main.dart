@@ -7,7 +7,7 @@ import 'package:code/util/services/notification_service.dart';
 import 'package:code/view/add_subscription_screen.dart';
 import 'package:code/view/authentication_screen.dart';
 import 'package:code/view/bottom_nav_bar/bottom_navigation_bar.dart';
-import 'package:code/view/bottom_nav_bar/new_home_screen.dart';
+import 'package:code/view/bottom_nav_bar/home_screen.dart';
 import 'package:code/view/change_password.dart';
 import 'package:code/view/detail_subscription_screen.dart';
 import 'package:code/view/forgetpassword_screen.dart';
@@ -61,7 +61,7 @@ Future<void> main() async {
           MyRoutes.addSubscriptionScreen:(context)=>AddSubscriptionScreen(),
           MyRoutes.detailsScreen:(context)=>DetailSubscriptionScreen(),
           MyRoutes.changePasswordScreen:(context)=>ChangePasswordScreen(),
-          MyRoutes.newHomeScreen:(context)=>NewHomeScreen(),
+          MyRoutes.homeScreen:(context)=>HomeScreen(),
           MyRoutes.settingScreen:(context)=>SettingScreen(),
 
         },

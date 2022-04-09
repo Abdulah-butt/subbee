@@ -14,6 +14,7 @@ import 'package:code/util/style.dart';
 import 'package:code/view/authentication_screen.dart';
 import 'package:code/widgets/custom_widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -37,12 +38,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.appBgColor,
-        body: Padding(
-          padding: EdgeInsets.all(ScreenSize.screenPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal:ScreenSize.screenPadding),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
@@ -59,41 +60,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   )
                 ],
               ),
+            ),
 
-              // profile list tile
+            // profile list tile
 
 
-                Row(
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal:ScreenSize.screenPadding),
+                child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Stack(
-                      children: [
-                        _image==null&&userModel.imgUrl=="null"?CircleAvatar(
-                            backgroundColor: AppColors.appBarColor,
-                            radius: 40,
-                            child: Icon(Icons.person,size: 45,color: AppColors.appBgColor,)
-                        ):_image!=null?CircleAvatar(
-                          radius: 40.0,
-                          backgroundImage:FileImage(_image!),
-                          backgroundColor: Colors.transparent,
-                        ):customProfileAvatar(userModel.imgUrl!,size: 80),
-                        Positioned(
-                          bottom: 0,
-                          right: -10,
-                          child: CircleAvatar(
-                            backgroundColor: AppColors.appBgColor,
-                            child: IconButton(
-                              icon: Icon(Icons.edit,color:AppColors.blackTextColor),
-                              onPressed: (){
-                                _showPicker(context);
-                              },
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-
-                    SizedBox(width: ScreenSize.width!*0.05,),
+                    // Stack(
+                    //   children: [
+                    //     _image==null&&userModel.imgUrl=="null"?CircleAvatar(
+                    //         backgroundColor: AppColors.appBarColor,
+                    //         radius: 40,
+                    //         child: Icon(Icons.person,size: 45,color: AppColors.appBgColor,)
+                    //     ):_image!=null?CircleAvatar(
+                    //       radius: 40.0,
+                    //       backgroundImage:FileImage(_image!),
+                    //       backgroundColor: Colors.transparent,
+                    //     ):customProfileAvatar(userModel.imgUrl!,size: 80),
+                    //     Positioned(
+                    //       bottom: 0,
+                    //       right: -10,
+                    //       child: CircleAvatar(
+                    //         backgroundColor: AppColors.appBgColor,
+                    //         child: IconButton(
+                    //           icon: Icon(Icons.edit,color:AppColors.blackTextColor),
+                    //           onPressed: (){
+                    //             _showPicker(context);
+                    //           },
+                    //         ),
+                    //       ),
+                    //     )
+                    //   ],
+                    // ),
+                    //
+                    // SizedBox(width: ScreenSize.width!*0.05,),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -112,42 +116,57 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     )
                   ],
                 ),
-
-              SizedBox(
-                height: ScreenSize.height! * 0.03,
               ),
-              Text(
-                "Account Settings",
-                style: headingStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            SizedBox(
+              height: 10,
+            ),
+            Expanded(
+              child: Container(
+                color: AppColors.appGreyBgColor,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal:ScreenSize.screenPadding),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: ScreenSize.height! * 0.03,
+                      ),
+                      Text(
+                        "Account Settings",
+                        style: headingStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                      SizedBox(
+                        height: ScreenSize.height! * 0.03,
+                      ),
+                      customListTile("Change Password", () async {
+                        Navigator.pushNamed(context, MyRoutes.changePasswordScreen);
+                      }),
+                      customListTile("Terms and Service", () {
+                        _launchURL("https://www.Subbee.com/termsandconditions");
+                      }),
+                      customListTile("Contact Us", () {
+                        launchEmail();
+
+                      }),
+
+
+                      SizedBox(
+                        height: ScreenSize.height! * 0.05,
+                      ),
+
+                      Align(
+                        alignment: Alignment.center,
+                        child: customButton("Logout",() async {
+                          showAlertDialog(context);
+                        },width: ScreenSize.width!*0.35,icon: Icon(Icons.logout,color: Colors.white,)),
+                      ),
+                    ],
+                  ),
+                ),
               ),
+            ),
 
-              SizedBox(
-                height: ScreenSize.height! * 0.03,
-              ),
-              customListTile("Change Password", () async {
-                Navigator.pushNamed(context, MyRoutes.changePasswordScreen);
-              }),
-              customListTile("Terms and Service", () {
-                _launchURL("https://www.Subbee.com/termsandconditions");
-              }),
-              customListTile("Contact Us", () {
-                launchEmail();
-
-              }),
-
-
-              SizedBox(
-                height: ScreenSize.height! * 0.05,
-              ),
-
-              Align(
-                alignment: Alignment.center,
-                child: customButton("Logout",() async {
-               showAlertDialog(context);
-                },width: ScreenSize.width!*0.35,icon: Icon(Icons.logout,color: Colors.white,)),
-              ),
-            ],
-          ),
+          ],
         ),
       ),
     );
@@ -267,8 +286,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       Navigator.pop(context);
       if (result) {
         MyConstant.currentUserModel!.imgUrl = imgUrl;
-        SubscriptionModel.getThisMonthLimit();
-
         MyAlert.showToast("Profile updated");
         setState(() {
 

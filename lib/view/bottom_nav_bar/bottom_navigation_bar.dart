@@ -3,9 +3,10 @@ import 'package:code/constant/my_constant.dart';
 import 'package:code/constant/screen_size.dart';
 import 'package:code/util/app_color.dart';
 import 'package:code/view/bottom_nav_bar/home_screen.dart';
-import 'package:code/view/bottom_nav_bar/new_home_screen.dart';
+import 'package:code/view/bottom_nav_bar/home_screen.dart';
 import 'package:code/view/bottom_nav_bar/profile_screen.dart';
 import 'package:code/view/bottom_nav_bar/spending_screen.dart';
+import 'package:code/view/model_sheet.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,7 +26,8 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen>
 
 
   var pages=[
-    NewHomeScreen(),
+    HomeScreen(),
+    HomeScreen(),
     ProfileScreen()
   ];
 
@@ -43,21 +45,72 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen>
       },
       child: SafeArea(
         child: Scaffold(
-
+          backgroundColor: AppColors.appBgColor,
           body: Center(
             child: pages[MyConstant.currentScreenIndex],
           ),
-          bottomNavigationBar: SalomonBottomBar(
-            duration:Duration(seconds: 1),
-            currentIndex: MyConstant.currentScreenIndex,
-            onTap: (i) => setState(() => MyConstant.currentScreenIndex = i),
-            items: [
-              /// Home
-              customBottomNavigationItem("Home",Icon(Icons.home)),
+          bottomNavigationBar: Stack(
+            children: [
+              SalomonBottomBar(
+                duration:Duration(seconds: 1),
+                currentIndex: MyConstant.currentScreenIndex,
+                onTap: (i){
+                  if(i==1){
+                    showModalBottomSheet(
+                        isScrollControlled: true,
+                        context: context,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(20),
+                          ),
+                        ),
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        builder: (context) {
+                          return ModelSheet();
+                        });
+                  }else {
+                    setState(() {
+                      MyConstant.currentScreenIndex = i;
+                    });
+                  }
+                },
+                items: [
+                  /// Home
+                  customBottomNavigationItem("Home",Icon(Icons.home)),
 
 
-              /// Profile
-              customBottomNavigationItem("Profile",Icon(Icons.person))
+                  /// add subscriptions
+                  customBottomNavigationItem("Profile",CircleAvatar(backgroundColor:AppColors.appBgColor,child:Icon(Icons.add,color: AppColors.appBgColor,),)),
+
+                  /// Profile
+                  customBottomNavigationItem("Profile",Icon(Icons.person))
+                ],
+              ),
+
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                top: 0,
+                child: Align(
+                    alignment: Alignment.center,
+                    child: GestureDetector(
+                      onTap: (){
+                        showModalBottomSheet(
+                            isScrollControlled: true,
+                            context: context,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(20),
+                              ),
+                            ),
+                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                            builder: (context) {
+                              return ModelSheet();
+                            });
+                      },
+                        child: CircleAvatar(backgroundColor: AppColors.btnColor,child:Icon(Icons.add,color: AppColors.appBgColor,),))),
+              )
             ],
           ),
         ),
@@ -65,7 +118,7 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen>
     );
   }
 
-  customBottomNavigationItem(String label, Icon icon) {
+  customBottomNavigationItem(String label, Widget icon) {
     return   SalomonBottomBarItem(
       icon: icon,
       title:Text(label),
